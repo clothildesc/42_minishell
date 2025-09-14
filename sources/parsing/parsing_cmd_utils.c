@@ -6,28 +6,46 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 17:01:17 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/11 10:52:56 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/14 20:11:15 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../libft/libft.h"
 #include "../../includes/minishell.h"
 
-t_cmd	*parse_cmd_name(t_cmd *new, char *cmd_name, t_shell *shell)
-{
-	char	*cmd_expanded;
-	char	*input;
+// t_cmd	*parse_cmd_name(t_cmd *new, t_token *token, t_shell *shell)
+// {
+// 	char	*cmd_expanded;
+// 	char	*input;
+// 	char	*tmp;
 
-	input = ft_strdup(cmd_name);
-	if (!input)
+// 	input = ft_strdup(token->value);
+// 	if (!input)
+// 		return (NULL);
+// 	cmd_expanded = builtin_expand(input, shell, NULL);
+// 	if (input)
+// 		free(input);
+// 	if (cmd_expanded)
+// 		new->name = cmd_expanded;
+// 	else
+// 		new->name = ft_strdup(token->value);
+// 	if (!new->name)
+// 	{
+// 		free(new);
+// 		return (NULL);
+// 	}
+// 	return (new);
+// }
+
+t_cmd	*set_cmd_name(t_cmd *new, t_arg *arg)
+{
+	if (!arg)
+	{
+		free(new);
 		return (NULL);
-	cmd_expanded = builtin_expand(input, shell, NULL);
-	if (input)
-		free(input);
-	if (cmd_expanded)
-		new->name = cmd_expanded;
-	else
-		new->name = ft_strdup(cmd_name);
+	}
+	new->name = ft_strdup(arg->arg);
+	printf("%s\n", new->name);
 	if (!new->name)
 	{
 		free(new);
@@ -35,6 +53,7 @@ t_cmd	*parse_cmd_name(t_cmd *new, char *cmd_name, t_shell *shell)
 	}
 	return (new);
 }
+
 
 static void	ft_lstadd_redirs(t_redir **lst, t_redir *new)
 {
@@ -107,7 +126,13 @@ void	ft_lstadd_args(t_arg **args, t_arg *new)
 			last = *args;
 			while (last->next)
 				last = last->next;
-			if (last->to_join)
+			if (last->to_join && last->arg[0] == '\0' && new->arg[0] == '\0')
+			{
+				free(new->arg);
+				free(new);
+				return ;
+			}
+			else if (last->to_join)
 				handle_to_join(last, new);
 			else
 				last->next = new;

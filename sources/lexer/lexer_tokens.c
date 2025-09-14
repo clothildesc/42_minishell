@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barmarti <barmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:48:19 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/14 19:00:00 by barmarti         ###   ########.fr       */
+/*   Updated: 2025/09/14 19:29:37 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,21 +42,15 @@ static void	reset_tmp_token(t_lexer *lexer)
 void	set_to_join(t_lexer *lexer)
 {
 	int		pos;
-	char	quote_type;
 
 	pos = lexer->pos;
-	quote_type = lexer->input[pos];
 	while (lexer->input[pos] && (lexer->input[pos] == '"' || \
 		lexer->input[pos] == '\''))
 		pos++;
 	if (lexer->input[pos] && !ft_isspace(lexer->input[pos]))
-			lexer->to_join = true;
+		lexer->to_join = true;
 	else
 		lexer->to_join = false;
-	// if (lexer->input[pos] && !is_pos_char_operator(lexer, pos))
-	// 	lexer->pos = pos - 1;
-	// else
-	// lexer->pos = pos;
 }
 
 static t_token	*set_new_token(t_lexer *lexer, t_token *new_token, \
@@ -123,7 +117,6 @@ void	create_token(t_lexer *lexer, bool to_join)
 			new_token->to_join = false;
 		else
 			new_token->to_join = lexer->to_join;
-		new_token->to_join = lexer->to_join;
 		new_token->type = WORD;
 		add_to_lst_tokens(&lexer->tokens, new_token);
 	}

@@ -4,6 +4,7 @@
 		"minishell.h": "c",
 		"type_traits": "c",
 		"libft.h": "c",
-		"structs.h": "c"
+		"structs.h": "c",
+		"typeinfo": "c"
 	}
 }
