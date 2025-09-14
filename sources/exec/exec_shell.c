@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_shell.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
+/*   By: barmarti <barmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 09:55:36 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/12 15:40:50 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/14 16:14:43 by barmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,7 @@ static void	execute_shell(char *input, t_shell *shell)
 	shell->tokens = ft_lexer(input, shell);
 	display_tokens(shell);
 	if (!shell->tokens)
-	{
-		shell->status = EXIT_SUCCESS;
 		return ;
-	}
 	get_syntax_errors(shell);
 	if (shell->status != EXIT_SUCCESS)
 	{

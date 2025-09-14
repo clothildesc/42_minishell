@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
+/*   By: barmarti <barmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:48:19 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/12 17:39:59 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/14 17:21:19 by barmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,38 @@ static void	handle_operators(t_lexer *lexer, char c)
 	create_token(lexer, true);
 }
 
-static int	is_next_char_operator(t_lexer *lexer)
+int	is_pos_char_operator(t_lexer *lexer, int position)
 {
 	char	next;
 
-	next = lexer->input[lexer->pos + 1];
+	next = lexer->input[position];
 	return (next == '|' || next == '<' || next == '>');
+}
+
+static int	has_closing_quote(char *input, int start, char quote)
+{
+	int	i;
+
+	i = start + 1;
+	while (input[i])
+	{
+		if (input[i] == quote)
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 static void	enter_quote_state(t_lexer *lexer, char quote_char)
 {
+	if (!has_closing_quote(lexer->input, lexer->pos, quote_char))
+	{
+		write_error_missing_quote(lexer);
+		return ;
+	}
 	if (lexer->state == NORMAL && lexer->tmp_token)
 		create_token(lexer, true);
-	if (quote_char == '\'')
+	else if (quote_char == '\'')
 	{
 		lexer->state = SINGLE_QUOTE;
 		lexer->to_exp = false;
@@ -60,7 +79,7 @@ void	process_normal_state(t_lexer *lexer)
 	else
 	{
 		add_char(&lexer->tmp_token, c);
-		if (is_next_char_operator(lexer))
+		if (is_pos_char_operator(lexer, lexer->pos + 1))
 			create_token(lexer, false);
 	}
 }

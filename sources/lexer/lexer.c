@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
+/*   By: barmarti <barmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:48:19 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/12 17:39:15 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/14 17:33:52 by barmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,21 +41,18 @@ static void	process_double_quote_state(t_lexer *lexer)
 		add_char(&lexer->tmp_token, c);
 }
 
-static int	check_if_not_normal_state(t_lexer *lexer)
+void	write_error_missing_quote(t_lexer *lexer)
 {
-	if (lexer->state != NORMAL)
+	write(2, "error: missing quote\n", 22);
+	if (lexer->tmp_token)
 	{
-		if (lexer->tmp_token)
-		{
-			ft_lstclear(&(lexer->tmp_token), free);
-			lexer->tmp_token = NULL;
-		}
-		if (lexer->tokens)
-			clear_tokens_lst(&lexer->tokens);
-		write(2, "error: missing quote\n", 22);
-		return (1);
+		ft_lstclear(&(lexer->tmp_token), free);
+		lexer->tmp_token = NULL;
 	}
-	return (0);
+	if (lexer->tokens)
+		clear_tokens_lst(&lexer->tokens);
+	lexer->state = NORMAL;
+	lexer->error = 1;
 }
 
 static void	process_current_char(t_lexer *lexer)
@@ -81,14 +78,19 @@ t_token	*ft_lexer(char *input, t_shell *shell)
 	lexer.to_exp = true;
 	lexer.to_join = false;
 	lexer.pos = 0;
-	while (lexer.input[lexer.pos])
+	while (lexer.input[lexer.pos] && !lexer.error)
 	{
 		c = lexer.input[lexer.pos];
 		process_current_char(&lexer);
 		(lexer.pos)++;
 	}
-	if (check_if_not_normal_state(&lexer))
+	if (lexer.state != NORMAL)
+		write_error_missing_quote(&lexer);
+	if (lexer.error)
+	{
+		shell->status = EXIT_FAILURE;
 		return (NULL);
+	}
 	create_token(&lexer, false);
 	return (lexer.tokens);
 }

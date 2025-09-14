@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
+/*   By: barmarti <barmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 17:00:27 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/12 17:26:49 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/14 17:18:05 by barmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,8 @@ void			close_all_fds_and_pipes(t_shell *shell);
 t_token			*ft_lexer(char *input, t_shell *shell);
 void			process_normal_state(t_lexer *lexer);
 void			set_to_join(t_lexer *lexer);
+int				is_pos_char_operator(t_lexer *lexer, int position);
+void			write_error_missing_quote(t_lexer *lexer);
 
 /*-------Token-------*/
 void			create_token(t_lexer *lexer, bool to_join);

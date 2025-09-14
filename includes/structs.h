@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   structs.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
+/*   By: barmarti <barmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 10:01:36 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/12 15:13:40 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/14 17:32:20 by barmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef struct s_lexer
 	bool			to_exp;
 	bool			to_join;
 	char			*input;
+	int				error;
 }	t_lexer;
 
 /*=============== ENV =============== */
