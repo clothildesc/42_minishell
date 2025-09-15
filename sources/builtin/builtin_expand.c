@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/10 16:50:06 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/15 15:31:20 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/15 15:35:21 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ static char	*get_expanded_result(t_shell *shell, char *input)
 {
 	char	*var_to_exp;
 	char	*result;
+	char	*status_str;
 	int		var_end_index;
 
 	if (!shell->env || !shell || !input)
@@ -72,7 +73,11 @@ static char	*get_expanded_result(t_shell *shell, char *input)
 	if (!var_to_exp)
 		return (NULL);
 	if (!ft_strcmp(var_to_exp, "?"))
-		result = ft_strjoin(ft_itoa(shell->prev_status), &input[var_end_index]);
+	{
+		status_str = ft_itoa(shell->prev_status);
+		result = ft_strjoin(status_str, &input[var_end_index]);
+		free(status_str);
+	}
 	else
 		result = find_env_var(shell->env, var_to_exp, input, var_end_index);
 	free(var_to_exp);
@@ -94,7 +99,11 @@ char	*builtin_expand(char *input, t_shell *shell, char *result)
 	if (!exp)
 		return (result);
 	if (!result)
+	{
 		result = ft_strdup(input);
+		if (!result)
+			return (free(exp), NULL);
+	}
 	new_result = ft_strnjoin(result, exp, dollar_index);
 	free(result);
 	free(exp);

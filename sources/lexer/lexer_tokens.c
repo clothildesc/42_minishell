@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:48:19 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/15 12:39:20 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/15 17:11:42 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,11 +93,14 @@ static int	should_skip_empty_token(t_lexer *lexer)
 		return (0);
 	consecutives_quotes = 0;
 	pos = lexer->pos - 1;
+	printf("[DEBUG] Start pos = %d\n", pos);
 	while (pos >= 0 && (lexer->input[pos] == '"' || lexer->input[pos] == '\''))
 	{
 		consecutives_quotes++;
 		pos--;
+		printf("[DEBUG] Start pos = %d\n", pos);
 	}
+	printf("[DEBUG] End pos = %d - char %c\n", pos, lexer->input[pos]);
 	return (consecutives_quotes > 2);
 }
 
