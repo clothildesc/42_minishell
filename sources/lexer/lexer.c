@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:48:19 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/14 19:43:06 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/15 11:34:49 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,13 @@ static void	process_double_quote_state(t_lexer *lexer)
 		add_char(&lexer->tmp_token, c);
 }
 
-void	write_error_missing_quote(t_lexer *lexer)
+void	write_error_missing_quote(t_lexer *lexer, char quote_char)
 {
-	write(2, "error: missing quote\n", 22);
+	ft_putstr_fd("error: missing ", 2);
+	if (quote_char == '\'')
+		ft_putendl_fd("single quote", 2);
+	else if (quote_char == '"')
+		ft_putendl_fd("double quote", 2);
 	if (lexer->tmp_token)
 	{
 		ft_lstclear(&(lexer->tmp_token), free);
@@ -78,14 +82,12 @@ t_token	*ft_lexer(char *input, t_shell *shell)
 	lexer.to_exp = true;
 	lexer.to_join = false;
 	lexer.pos = 0;
+	c = lexer.input[lexer.pos];
 	while (lexer.input[lexer.pos] && !lexer.error)
 	{
-		c = lexer.input[lexer.pos];
 		process_current_char(&lexer);
 		(lexer.pos)++;
 	}
-	if (lexer.state != NORMAL)
-		write_error_missing_quote(&lexer);
 	if (lexer.error)
 	{
 		shell->status = EXIT_FAILURE;

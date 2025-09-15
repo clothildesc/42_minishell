@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 17:00:27 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/14 20:11:06 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/15 10:32:26 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ t_token			*ft_lexer(char *input, t_shell *shell);
 void			process_normal_state(t_lexer *lexer);
 void			set_to_join(t_lexer *lexer);
 int				is_pos_char_operator(t_lexer *lexer, int position);
-void			write_error_missing_quote(t_lexer *lexer);
+void			write_error_missing_quote(t_lexer *lexer, char quote_char);
 
 /*-------Token-------*/
 void			create_token(t_lexer *lexer, bool to_join);

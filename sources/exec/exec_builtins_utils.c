@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtins_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barmarti <barmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 11:56:08 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/12 11:17:50 by barmarti         ###   ########.fr       */
+/*   Updated: 2025/09/15 11:10:33 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ int	is_a_builtin(char *name)
 {
 	if (!name)
 		return (0);
-	// else if (!ft_strcmp(name, ":"))
-	// 	return (1);
 	else if (!ft_strcmp(name, "env"))
 		return (1);
 	else if (!ft_strcmp(name, "pwd"))
@@ -81,7 +79,5 @@ int	execute_parent_builtins(t_cmd *cmd, t_shell *shell, \
 		return (builtin_export(&shell->env, cmd->args));
 	else if (!ft_strcmp(cmd->name, "exit"))
 		return (builtin_exit(shell, cmd->args, saved_in, saved_out));
-	// else if (!ft_strcmp(cmd->name, ":"))
-	// 	return (EXIT_SUCCESS);
 	return (EXIT_FAILURE);
 }

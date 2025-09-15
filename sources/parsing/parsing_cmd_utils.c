@@ -6,36 +6,12 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 17:01:17 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/14 20:11:15 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/15 10:18:34 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../libft/libft.h"
 #include "../../includes/minishell.h"
-
-// t_cmd	*parse_cmd_name(t_cmd *new, t_token *token, t_shell *shell)
-// {
-// 	char	*cmd_expanded;
-// 	char	*input;
-// 	char	*tmp;
-
-// 	input = ft_strdup(token->value);
-// 	if (!input)
-// 		return (NULL);
-// 	cmd_expanded = builtin_expand(input, shell, NULL);
-// 	if (input)
-// 		free(input);
-// 	if (cmd_expanded)
-// 		new->name = cmd_expanded;
-// 	else
-// 		new->name = ft_strdup(token->value);
-// 	if (!new->name)
-// 	{
-// 		free(new);
-// 		return (NULL);
-// 	}
-// 	return (new);
-// }
 
 t_cmd	*set_cmd_name(t_cmd *new, t_arg *arg)
 {
@@ -45,7 +21,6 @@ t_cmd	*set_cmd_name(t_cmd *new, t_arg *arg)
 		return (NULL);
 	}
 	new->name = ft_strdup(arg->arg);
-	printf("%s\n", new->name);
 	if (!new->name)
 	{
 		free(new);

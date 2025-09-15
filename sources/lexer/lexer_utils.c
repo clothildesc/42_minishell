@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:48:19 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/14 19:54:25 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/15 12:37:59 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,33 +51,18 @@ static void	enter_quote_state(t_lexer *lexer, char quote_char)
 {
 	if (lexer->state == NORMAL && lexer->tmp_token)
 		create_token(lexer, true);
+	if (!has_closing_quote(lexer->input, lexer->pos, quote_char))
+	{
+		write_error_missing_quote(lexer, quote_char);
+		return ;
+	}
 	if (quote_char == '\'')
 	{
-			  int has_closing = has_closing_quote(lexer->input, lexer->pos, quote_char);
-    printf("[DEBUG] enter_quote_state: quote='%c', pos=%d, has_closing=%d\n", 
-           quote_char, lexer->pos, has_closing);
-    
-    if (!has_closing)
-    {
-        write_error_missing_quote(lexer);
-        return ;
-    }
 		lexer->state = SINGLE_QUOTE;
 		lexer->to_exp = false;
 	}
 	else
-	{
-			  int has_closing = has_closing_quote(lexer->input, lexer->pos, quote_char);
-    printf("[DEBUG] enter_quote_state: quote='%c', pos=%d, has_closing=%d\n", 
-           quote_char, lexer->pos, has_closing);
-    
-    if (!has_closing)
-    {
-        write_error_missing_quote(lexer);
-        return ;
-    }
 		lexer->state = DOUBLE_QUOTE;
-	}
 }
 
 void	process_normal_state(t_lexer *lexer)

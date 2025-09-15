@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:48:19 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/14 19:29:37 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/15 12:39:20 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,95 +30,94 @@ static void	add_to_lst_tokens(t_token **lst, t_token *new)
 		*lst = new;
 }
 
-static void	reset_tmp_token(t_lexer *lexer)
+static void	create_new_token(t_lexer *lexer)
 {
-	ft_lstclear(&lexer->tmp_token, free);
-	lexer->tmp_token = NULL;
-	lexer->state = NORMAL;
-	lexer->to_exp = true;
-	lexer->to_join = false;
-}
+	char	*token_value;
+	t_token	*new_token;
 
-void	set_to_join(t_lexer *lexer)
-{
-	int		pos;
-
-	pos = lexer->pos;
-	while (lexer->input[pos] && (lexer->input[pos] == '"' || \
-		lexer->input[pos] == '\''))
-		pos++;
-	if (lexer->input[pos] && !ft_isspace(lexer->input[pos]))
-		lexer->to_join = true;
-	else
-		lexer->to_join = false;
-}
-
-static t_token	*set_new_token(t_lexer *lexer, t_token *new_token, \
-	char *token_value)
-{
+	token_value = create_token_value(lexer);
+	if (!token_value)
+	{
+		ft_lstclear(&lexer->tmp_token, free);
+		return ;
+	}
+	new_token = malloc(sizeof(t_token));
+	if (!new_token)
+	{
+		ft_lstclear(&lexer->tmp_token, free);
+		free(token_value);
+		return ;
+	}
 	ft_bzero(new_token, sizeof(t_token));
 	new_token->value = token_value;
 	new_token->to_exp = lexer->to_exp;
 	new_token->to_join = lexer->to_join;
 	new_token->type = determine_token_type(lexer);
 	add_to_lst_tokens(&lexer->tokens, new_token);
-	return (new_token);
 }
 
-void	create_token(t_lexer *lexer, bool to_join)
+static void	create_empty_token(t_lexer *lexer)
 {
-	char	*token_value;
 	t_token	*new_token;
-	t_token	*last_token = NULL;
 
-	if (to_join)
-		set_to_join(lexer);
-	else
-		lexer->to_join = false;
+	new_token = malloc(sizeof(t_token));
+	if (!new_token)
+		return ;
+	ft_bzero(new_token, sizeof(t_token));
+	new_token->value = ft_strdup("");
+	if (!new_token->value)
+	{
+		free(new_token);
+		return ;
+	}
+	new_token->to_exp = false;
+	new_token->to_join = lexer->to_join;
+	new_token->type = WORD;
+	add_to_lst_tokens(&lexer->tokens, new_token);
+}
+
+static int	should_skip_empty_token(t_lexer *lexer)
+{
+	t_token	*last_token;
+	int		consecutives_quotes;
+	int		pos;
+
+	last_token = NULL;
 	if (lexer->tokens)
 	{
 		last_token = lexer->tokens;
 		while (last_token->next)
 			last_token = last_token->next;
 	}
-	if (lexer->tmp_token)
+	if (!last_token || last_token->value[0] != '\0' || lexer->to_join != 0)
+		return (0);
+	consecutives_quotes = 0;
+	pos = lexer->pos - 1;
+	while (pos >= 0 && (lexer->input[pos] == '"' || lexer->input[pos] == '\''))
 	{
-		token_value = create_token_value(lexer);
-		printf("[DEBUG] create_token tmp_token (%s)\nlexer_to_join = %d\n", token_value, lexer->to_join);
-		if (!token_value)
-		{
-			ft_lstclear(&lexer->tmp_token, free);
-			return ;
-		}
-		new_token = malloc(sizeof(t_token));
-		if (!new_token)
-		{
-			ft_lstclear(&lexer->tmp_token, free);
-			free(token_value);
-			return ;
-		}
-		set_new_token(lexer, new_token, token_value);
+		consecutives_quotes++;
+		pos--;
 	}
+	return (consecutives_quotes > 2);
+}
+
+void	create_token(t_lexer *lexer, bool to_join)
+{
+	if (to_join)
+		set_to_join(lexer);
+	else
+		lexer->to_join = false;
+	if (lexer->tmp_token)
+		create_new_token(lexer);
 	else if (to_join && lexer->state == NORMAL)
 	{
-		printf("[DEBUG] create_token no tmp_token (0 - NULL)\nlexer_to_join = %d\n", lexer->to_join);
-		new_token = malloc(sizeof(t_token));
-		if (!new_token)
+		if (should_skip_empty_token(lexer))
 			return ;
-		ft_bzero(new_token, sizeof(t_token));
-		new_token->value = ft_strdup("");
-		if (!new_token->value)
-		{
-			free(new_token);
-			return ;
-		}
-		new_token->to_exp = false;
-		if (last_token && last_token->value[0] == '\0')
-			new_token->to_join = false;
-		else
-			new_token->to_join = lexer->to_join;
-		new_token->type = WORD;
-		add_to_lst_tokens(&lexer->tokens, new_token);
+		create_empty_token(lexer);
 	}
-	reset_tmp_token(lexer);
+	ft_lstclear(&lexer->tmp_token, free);
+	lexer->tmp_token = NULL;
+	lexer->state = NORMAL;
+	lexer->to_exp = true;
+	lexer->to_join = false;
 }
