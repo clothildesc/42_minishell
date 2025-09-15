@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/10 16:47:11 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/12 18:45:00 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/15 14:39:09 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,70 +46,12 @@ static bool	process_n_options(char **args, int *i)
 	return (option);
 }
 
-int	ft_print_no_quote(char *arg)
-{
-	int	i;
-
-	i = 0;
-	while (arg[i])
-	{
-		if (arg[i] != '\'')
-			write(1, &arg[i], 1);
-		i++;
-	}
-	return (1);
-}
-
-// int	handle_quoted_str(char *arg, t_shell *shell)
-// {
-// 	int		i;
-
-// 	i = 0;
-// 	while (arg[i])
-// 	{
-// 		if (arg[i] != '\'' && arg[i] != '$')
-// 			write(1, &arg[i], 1);
-// 		else
-// 		{
-// 			if (arg[i] == '\'')
-// 				return (ft_print_no_quote(&arg[i]));
-// 			i++;
-// 			return (print_echo_arg(&arg[i], shell));
-// 		}
-// 		i++;
-// 	}
-// 	return (0);
-// }
-
-// int	print_echo_arg(char *arg, t_shell *shell)
-// {
-// 	int	i;
-
-// 	printf("arg = %s\n", arg);
-// 	if (arg[0] != '$')
-// 		return (handle_quoted_str(arg, shell), 1);
-// 	if (!arg[1])
-// 		return (ft_printf("%s", arg), 1);
-// 	if (!shell->env && arg[1] == '?' && !arg[2])
-// 		return (ft_printf("%d", shell->status), 1);
-// 	if (ft_isdigit(arg[1]) && arg[2])
-// 		return (ft_printf("%s", &arg[2]), 1);
-// 	i = 1;
-// 	while (ft_isalnum(arg[i]))
-// 		i++;
-// 	if (arg[i])
-// 		return (ft_printf("%s", &arg[i]), 1);
-// 	return (0);
-// }
-
-
-int	builtin_echo(char **args, t_shell *shell)
+int	builtin_echo(char **args)
 {
 	bool	option;
 	bool	first;
 	int		i;
 
-	(void)shell;
 	int j = 0;
 	printf("=============ARGS=============\n");
 	while (args[j])
@@ -127,8 +69,6 @@ int	builtin_echo(char **args, t_shell *shell)
 			ft_printf(" ");
 		ft_printf("%s",args[i]);
 		first = false;
-		// if (!(args[i][0]))
-		// 	first = true;
 		i++;
 	}
 	if (!option)

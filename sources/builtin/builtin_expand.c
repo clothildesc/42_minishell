@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/10 16:50:06 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/11 16:55:42 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/15 15:31:20 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ static char	*get_var_to_expand(char *input, int var_end_index)
 {
 	char	*var_to_exp;
 
+	if (!input)
+		return (NULL);
 	var_to_exp = ft_substr(input, 0, var_end_index);
 	if (!var_to_exp)
 		return (NULL);
@@ -48,6 +50,8 @@ int	get_var_end_index(char *input)
 	int	i;
 
 	i = 0;
+	if (input[i] && input[i] == '?')
+		return (1);
 	while (input[i] && (ft_isalnum(input[i]) || input[i] == '_'))
 		i++;
 	return (i);
@@ -61,15 +65,16 @@ static char	*get_expanded_result(t_shell *shell, char *input)
 
 	if (!shell->env || !shell || !input)
 		return (NULL);
-	if (!ft_strcmp(input, "?"))
-		return (ft_itoa(shell->prev_status));
 	var_end_index = get_var_end_index(input);
 	if (var_end_index == 0)
 		return (NULL);
 	var_to_exp = get_var_to_expand(input, var_end_index);
 	if (!var_to_exp)
 		return (NULL);
-	result = find_env_var(shell->env, var_to_exp, input, var_end_index);
+	if (!ft_strcmp(var_to_exp, "?"))
+		result = ft_strjoin(ft_itoa(shell->prev_status), &input[var_end_index]);
+	else
+		result = find_env_var(shell->env, var_to_exp, input, var_end_index);
 	free(var_to_exp);
 	return (result);
 }

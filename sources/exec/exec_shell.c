@@ -6,14 +6,14 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 09:55:36 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/15 10:43:54 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/15 14:39:25 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../libft/libft.h"
 #include "../../includes/minishell.h"
 
-void display_tokens(t_shell *shell)
+void	display_tokens(t_shell *shell)
 {
 	t_token	*current;
 	int	i = 1;
@@ -29,23 +29,6 @@ void display_tokens(t_shell *shell)
 		current = current->next;
 	}
 }
-
-// void display_tokens(t_shell *shell)
-// {
-// 	t_token	*current;
-// 	int	i = 1;
-
-// 	current = shell->tokens;
-// 	while (current)
-// 	{
-// 		if (current->value[0] == '\0')
-// 			ft_printf("[%d] = [vide]\n", i, current->value);
-// 		else
-// 			ft_printf("[%d] = [%s]\n", i, current->value);
-// 		i++;
-// 		current = current->next;
-// 	}
-// }
 
 static void	execute_shell(char *input, t_shell *shell)
 {

@@ -5,6 +5,7 @@
 		"type_traits": "c",
 		"libft.h": "c",
 		"structs.h": "c",
-		"typeinfo": "c"
+		"typeinfo": "c",
+		"compare": "c"
 	}
 }

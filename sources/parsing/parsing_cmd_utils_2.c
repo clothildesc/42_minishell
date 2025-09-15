@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_cmd_utils_2.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barmarti <barmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 17:01:17 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/14 14:36:31 by barmarti         ###   ########.fr       */
+/*   Updated: 2025/09/15 12:57:42 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ void	create_args_lst(t_arg **args, t_token *token, t_shell *shell)
 		clear_args_lst(args);
 		return ;
 	}
-	if (token->to_exp == true && token->to_join == false && new_arg->arg[0] == '\0')
+	if (token->to_exp == true && token->to_join == false \
+		&& new_arg->arg[0] == '\0')
 	{
 		free(new_arg->arg);
 		free(new_arg);

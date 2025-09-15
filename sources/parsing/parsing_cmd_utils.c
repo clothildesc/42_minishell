@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 17:01:17 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/15 10:18:34 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/15 12:54:26 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ t_cmd	*set_cmd_name(t_cmd *new, t_arg *arg)
 	}
 	return (new);
 }
-
 
 static void	ft_lstadd_redirs(t_redir **lst, t_redir *new)
 {
