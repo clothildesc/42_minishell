@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstadd_back_bonus.c                             :+:      :+:    :+:   */
+/*   ft_lstadd_back.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
+/*   By: barmarti <barmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 19:17:33 by clothildesc       #+#    #+#             */
-/*   Updated: 2025/05/05 10:19:39 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/12 10:55:12 by barmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 			last->next = new;
 		}
 		else
-		{
 			*lst = new;
-		}
 	}
 }

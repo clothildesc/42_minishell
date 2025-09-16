@@ -6,28 +6,21 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 17:01:17 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/10 13:02:57 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 15:44:08 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../libft/libft.h"
 #include "../../includes/minishell.h"
 
-t_cmd	*parse_cmd_name(t_cmd *new, char *cmd_name, t_shell *shell)
+t_cmd	*set_cmd_name(t_cmd *new, t_arg *arg)
 {
-	char	*cmd_expanded;
-	char	*input;
-
-	input = ft_strdup(cmd_name);
-	if (!input)
+	if (!arg)
+	{
+		free(new);
 		return (NULL);
-	cmd_expanded = builtin_expand(input, shell, NULL);
-	if (input)
-		free(input);
-	if (cmd_expanded)
-		new->name = cmd_expanded;
-	else
-		new->name = ft_strdup(cmd_name);
+	}
+	new->name = ft_strdup(arg->arg);
 	if (!new->name)
 	{
 		free(new);
@@ -89,6 +82,7 @@ static void	handle_to_join(t_arg *last, t_arg *new)
 		free(new);
 		return ;
 	}
+	last->to_join = new->to_join;
 	free(old_arg);
 	free(new->arg);
 	free(new);

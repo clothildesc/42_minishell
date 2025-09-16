@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 17:00:27 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/10 11:30:19 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 15:43:08 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,9 @@
 # define EXIT_CTRL_C 			130
 # define EXIT_CTRL_D 			131
 
-# define EOF_RECEIVED			3
-
 /*=============== ERRORS =============== */
 
 # define SYNTAX_ERROR_TOKEN "minishell: syntax error near unexpected token "
-# define SYNTAX_ERROR_KEY_ENV "minishell: export: not a valid identifier"
 # define ERROR_CD_MANY_ARGS "minishell: cd: too many arguments"
 # define ERROR_MISSING_FILE "minishell: No such file or directory"
 
@@ -84,9 +81,12 @@ void			close_all_fds_and_pipes(t_shell *shell);
 /*-------Lexer-------*/
 t_token			*ft_lexer(char *input, t_shell *shell);
 void			process_normal_state(t_lexer *lexer);
+void			set_to_join(t_lexer *lexer);
+int				is_pos_char_operator(t_lexer *lexer, int position);
+void			write_error_missing_quote(t_lexer *lexer, char quote_char);
 
 /*-------Token-------*/
-void			create_token(t_lexer *lexer, bool to_join, bool single_quote);
+void			create_token(t_lexer *lexer, bool to_join);
 void			add_char(t_list **tmp_token, char c);
 void			clear_tokens_lst(t_token **lst);
 t_token_type	determine_token_type(t_lexer *lexer);
@@ -95,11 +95,10 @@ char			*create_token_value(t_lexer *lexer);
 /*-------AST-------*/
 t_ast			*parse_pipe(t_shell *shell, t_token **tokens);
 t_ast			*parse_cmd(t_token **tokens, t_shell *shell);
-t_cmd			*parse_cmd_name(t_cmd *new, char *cmd_name, t_shell *shell);
+t_cmd			*set_cmd_name(t_cmd *new, t_arg *arg);
 void			ft_lstadd_args(t_arg **args, t_arg *new);
 void			create_args_lst(t_arg **args, t_token *token, t_shell *shell);
 void			lst_args_to_array(t_cmd *cmd, t_arg **args);
-void			get_token_value(t_token *token, t_arg *new_arg);
 void			get_exp_value(t_token *token, t_shell *shell, t_arg *new_arg);
 void			create_redir_lst(t_token *token, t_cmd *cmd);
 
@@ -107,27 +106,28 @@ void			create_redir_lst(t_token *token, t_cmd *cmd);
 /* env */
 t_env			*get_env(char **envp);
 void			ft_lstadd_back_env(t_env **lst, t_env *new);
-int				builtin_env(t_env *env);
+int				builtin_env(t_env *env, t_cmd *cmd);
 /* unset */
 int				builtin_unset(t_env **env, char **args);
 /* export */
-int				builtin_export(t_env *env, char **args);
+int				builtin_export(t_env **env, char **args);
 int				value_to_append(char *input);
 char			*get_input_value(char *input);
 char			*get_input_key(char *input);
-int				compare_key(char *env, char *inpt);
 t_env			*get_node(t_env **head, char *key);
+void			update_env_value(char *input, t_env **node);
 t_env			*create_new_env_node(t_env *new, char *input, char *key);
 int				print_env_export(t_env *env);
 /* expand */
 int				get_char_index(char *input, char c);
+int				get_var_end_index(char *input);
 char			*builtin_expand(char *input, t_shell *shell, char *result);
 /* pwd */
 int				builtin_pwd(void);
 /* cd */
 int				builtin_cd(char **args, t_env *env);
 /* echo */
-int				builtin_echo(char **args, t_shell *shell);
+int				builtin_echo(char **args);
 /* exit */
 int				builtin_exit(t_shell *shell, char **args, \
 				int saved_in, int saved_out);

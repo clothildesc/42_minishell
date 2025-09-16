@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 09:55:36 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/10 11:35:25 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 15:44:24 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,14 @@ static void	execute_shell(char *input, t_shell *shell)
 	shell->tokens = NULL;
 	shell->ast = NULL;
 	shell->tokens = ft_lexer(input, shell);
-	if (!shell->tokens)
+	if (!shell->tokens && shell->status == EXIT_FAILURE)
 	{
-		shell->status = EXIT_SUCCESS;
+		clear_tokens_lst(&shell->tokens);
+		shell->prev_status = shell->status;
 		return ;
 	}
+	if (!shell->tokens)
+		return ;
 	get_syntax_errors(shell);
 	if (shell->status != EXIT_SUCCESS)
 	{

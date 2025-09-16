@@ -6,48 +6,20 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 19:09:25 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/09 10:22:51 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 15:41:48 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../libft/libft.h"
 #include "../../includes/minishell.h"
 
-static void	update_env_value(char *input, t_env **node)
-{
-	char	*new_value;
-	char	*old_value;
-
-	if (!input || !node || !*node)
-		return ;
-	new_value = get_input_value(input);
-	if (!new_value)
-		return ;
-	if (value_to_append(input))
-	{
-		if (!new_value)
-			return ;
-		old_value = (*node)->value;
-		(*node)->value = ft_strjoin((*node)->value, new_value);
-		free(old_value);
-		free(new_value);
-	}
-	else
-	{
-		free((*node)->value);
-		(*node)->value = new_value;
-	}
-	if (!(*node)->value)
-		return ;
-}
-
-static t_env	*find_or_create_env(t_env *env, char *input, char *key)
+static t_env	*find_or_create_env(t_env **env, char *input, char *key)
 {
 	t_env	*tmp;
 
-	if (!env || !input || !key)
+	if (!input || !key)
 		return (NULL);
-	tmp = env;
+	tmp = *env;
 	while (tmp)
 	{
 		if (!ft_strcmp(key, tmp->key))
@@ -65,35 +37,39 @@ static t_env	*find_or_create_env(t_env *env, char *input, char *key)
 	return (create_new_env_node(tmp, input, key));
 }
 
-static int	key_name_is_valid(char *key)
+static int	not_valid_identifier(char *input)
+{
+	ft_putstr_fd("minishell: export: '", 2);
+	ft_putstr_fd(input, 2);
+	ft_putendl_fd("': not a valid identifier", 2);
+	return (0);
+}
+
+static int	key_name_is_valid(char *key, char *input)
 {
 	int	i;
 
 	i = 0;
+	if (key[0] == '\0')
+		return (not_valid_identifier(input));
 	while (key[i])
 	{
 		if (!ft_isalpha(key[0]) && key[0] != '_')
-		{
-			ft_putendl_fd(SYNTAX_ERROR_KEY_ENV, 2);
-			return (0);
-		}
+			return (not_valid_identifier(input));
 		else if (!ft_isalpha(key[i]) && !ft_isdigit(key[i]) && key[i] != '_')
-		{
-			ft_putendl_fd(SYNTAX_ERROR_KEY_ENV, 2);
-			return (0);
-		}
+			return (not_valid_identifier(input));
 		else
 			i++;
 	}
 	return (1);
 }
 
-static void	handle_export_key(t_env *env, char *arg, char *key, \
+static void	handle_export_key(t_env **env, char *arg, char *key, \
 								int *exit_code)
 {
 	t_env	*new;
 
-	if (!key_name_is_valid(key))
+	if (!key_name_is_valid(key, arg))
 	{
 		*exit_code = EXIT_FAILURE;
 		free(key);
@@ -102,11 +78,11 @@ static void	handle_export_key(t_env *env, char *arg, char *key, \
 	{
 		new = find_or_create_env(env, arg, key);
 		if (new)
-			ft_lstadd_back_env(&env, new);
+			ft_lstadd_back_env(env, new);
 	}
 }
 
-int	builtin_export(t_env *env, char **args)
+int	builtin_export(t_env **env, char **args)
 {
 	char	*key;
 	int		i;
@@ -116,7 +92,7 @@ int	builtin_export(t_env *env, char **args)
 	if (!args)
 		return (exit_code);
 	if (args && !args[1])
-		return (print_env_export(env));
+		return (print_env_export(*env));
 	i = 1;
 	while (args[i])
 	{

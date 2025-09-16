@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 20:03:10 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/09 10:25:35 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/15 14:37:12 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,25 +35,34 @@ static t_ast	*init_cmd_node(void)
 	return (new_cmd);
 }
 
-static int	is_redir(t_token_type type)
+static t_token	*process_token(t_token *current, t_ast *new_cmd, t_arg **args, \
+	t_shell *shell)
 {
-	return (type == REDIR_IN || type == REDIR_OUT || \
-			type == HERE_DOC || type == APPEND_OUT);
+	if (current->type == WORD)
+	{
+		create_args_lst(args, current, shell);
+		return (current->next);
+	}
+	else if (current->type == REDIR_IN || current->type == REDIR_OUT || \
+			current->type == HERE_DOC || current->type == APPEND_OUT)
+	{
+		create_redir_lst(current, new_cmd->data.cmd.cmd);
+		current = current->next;
+		if (current)
+			current = current->next;
+		return (current);
+	}
+	return (NULL);
 }
 
-static void	process_word(t_arg **args, t_token **current, t_cmd *new_cmd, \
-						t_shell *shell)
+static void	finalize_cmd_args(t_cmd *cmd, t_arg **args)
 {
-	if (!new_cmd->name)
-		parse_cmd_name(new_cmd, (*current)->value, shell);
-	create_args_lst(args, *current, shell);
-	*current = (*current)->next;
-}
-
-static void	process_redir(t_token **current, t_cmd *new_cmd)
-{
-	create_redir_lst(*current, new_cmd);
-	*current = (*current)->next->next;
+	if (*args)
+	{
+		if (!cmd->name)
+			set_cmd_name(cmd, *args);
+		lst_args_to_array(cmd, args);
+	}
 }
 
 t_ast	*parse_cmd(t_token **tokens, t_shell *shell)
@@ -70,15 +79,11 @@ t_ast	*parse_cmd(t_token **tokens, t_shell *shell)
 		return (NULL);
 	while (current && current->type != PIPE)
 	{
-		if (current->type == WORD)
-			process_word(&args, &current, new_cmd->data.cmd.cmd, shell);
-		else if (is_redir(current->type))
-			process_redir(&current, new_cmd->data.cmd.cmd);
-		else
+		current = process_token(current, new_cmd, &args, shell);
+		if (!current)
 			break ;
 	}
-	if (args)
-		lst_args_to_array(new_cmd->data.cmd.cmd, &args);
+	finalize_cmd_args(new_cmd->data.cmd.cmd, &args);
 	*tokens = current;
 	return (new_cmd);
 }

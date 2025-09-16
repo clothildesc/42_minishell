@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/10 16:47:11 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/10 11:47:53 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 15:44:54 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,27 +46,7 @@ static bool	process_n_options(char **args, int *i)
 	return (option);
 }
 
-static int	print_echo_arg(char *arg, t_shell *shell)
-{
-	int	i;
-
-	if (arg[0] == '$' && !arg[1])
-		return (ft_printf("%s", arg), 1);
-	else if (!shell->env && arg[0] == '$' && arg[1] == '?' && !arg[2])
-		return (ft_printf("%d", shell->status), 1);
-	else if (arg[0] != '$')
-		return (ft_printf("%s", arg), 1);
-	else if (arg[1] && ft_isdigit(arg[1]) && arg[2])
-		return (ft_printf("%s", &arg[2]), 1);
-	i = 1;
-	while (ft_isalnum(arg[i]))
-		i++;
-	if (arg[i])
-		return (ft_printf("%s", &arg[i]), 1);
-	return (0);
-}
-
-int	builtin_echo(char **args, t_shell *shell)
+int	builtin_echo(char **args)
 {
 	bool	option;
 	bool	first;
@@ -79,8 +59,8 @@ int	builtin_echo(char **args, t_shell *shell)
 	{
 		if (!first)
 			ft_printf(" ");
-		if (args[i][0] == '\0' || print_echo_arg(args[i], shell))
-			first = false;
+		ft_printf("%s", args[i]);
+		first = false;
 		i++;
 	}
 	if (!option)

@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 11:56:08 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/10 11:29:54 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 12:45:08 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ int	is_a_builtin(char *name)
 {
 	if (!name)
 		return (0);
-	else if (!ft_strcmp(name, ":"))
-		return (1);
 	else if (!ft_strcmp(name, "env"))
 		return (1);
 	else if (!ft_strcmp(name, "pwd"))
@@ -54,9 +52,9 @@ bool	is_parent_builtin(char *name)
 int	execute_builtins(t_cmd *cmd, t_shell *shell)
 {
 	if (!ft_strcmp(cmd->name, "env"))
-		return (builtin_env(shell->env));
+		return (builtin_env(shell->env, cmd));
 	else if (!ft_strcmp(cmd->name, "echo"))
-		return (builtin_echo(cmd->args, shell));
+		return (builtin_echo(cmd->args));
 	else if (!ft_strcmp(cmd->name, "pwd"))
 		return (builtin_pwd());
 	else if (!ft_strcmp(cmd->name, "cd"))
@@ -64,7 +62,7 @@ int	execute_builtins(t_cmd *cmd, t_shell *shell)
 	else if (!ft_strcmp(cmd->name, "unset"))
 		return (builtin_unset(&shell->env, cmd->args));
 	else if (!ft_strcmp(cmd->name, "export"))
-		return (builtin_export(shell->env, cmd->args));
+		return (builtin_export(&shell->env, cmd->args));
 	else if (!ft_strcmp(cmd->name, "exit"))
 		return (builtin_exit(shell, cmd->args, -1, -1));
 	return (EXIT_FAILURE);
@@ -78,10 +76,8 @@ int	execute_parent_builtins(t_cmd *cmd, t_shell *shell, \
 	else if (!ft_strcmp(cmd->name, "unset"))
 		return (builtin_unset(&shell->env, cmd->args));
 	else if (!ft_strcmp(cmd->name, "export"))
-		return (builtin_export(shell->env, cmd->args));
+		return (builtin_export(&shell->env, cmd->args));
 	else if (!ft_strcmp(cmd->name, "exit"))
 		return (builtin_exit(shell, cmd->args, saved_in, saved_out));
-	else if (!ft_strcmp(cmd->name, ":"))
-		return (EXIT_SUCCESS);
 	return (EXIT_FAILURE);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_tokens_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barmarti <barmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 10:58:27 by cscache           #+#    #+#             */
-/*   Updated: 2025/08/29 18:45:23 by barmarti         ###   ########.fr       */
+/*   Updated: 2025/09/16 14:24:27 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,4 +97,29 @@ char	*create_token_value(t_lexer *lexer)
 	}
 	token_value[i] = 0;
 	return (token_value);
+}
+
+void	set_to_join(t_lexer *lexer)
+{
+	int		pos;
+
+	pos = lexer->pos;
+	if (lexer->input[pos] != '"' && lexer->input[pos] != '\'')
+	{
+		while (lexer->input[pos] && (lexer->input[pos] == '"' || \
+			lexer->input[pos] == '\''))
+			pos++;
+		if (lexer->input[pos] && !ft_isspace(lexer->input[pos]))
+			lexer->to_join = true;
+		else
+			lexer->to_join = false;
+	}
+	else
+	{
+		pos++;
+		if (lexer->input[pos] && !ft_isspace(lexer->input[pos]))
+			lexer->to_join = true;
+		else
+			lexer->to_join = false;
+	}
 }

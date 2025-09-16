@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:48:19 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/10 11:52:15 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/15 11:34:49 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,8 @@ static void	process_single_quote_state(t_lexer *lexer)
 	c = lexer->input[lexer->pos];
 	if (c == '\'')
 	{
-		lexer->state = STATE_NORMAL;
-		if (!ft_isspace(lexer->input[lexer->pos + 1]))
-			create_token(lexer, true, true);
+		lexer->state = NORMAL;
+		create_token(lexer, true);
 	}
 	else
 		add_char(&lexer->tmp_token, c);
@@ -35,60 +34,65 @@ static void	process_double_quote_state(t_lexer *lexer)
 	c = lexer->input[lexer->pos];
 	if (c == '"')
 	{
-		lexer->state = STATE_NORMAL;
-		if (!ft_isspace(lexer->input[lexer->pos + 1]))
-			create_token(lexer, true, false);
+		lexer->state = NORMAL;
+		create_token(lexer, true);
 	}
 	else
 		add_char(&lexer->tmp_token, c);
 }
 
-static int	check_if_not_normal_state(t_lexer *lexer)
+void	write_error_missing_quote(t_lexer *lexer, char quote_char)
 {
-	if (lexer->state != STATE_NORMAL)
+	ft_putstr_fd("error: missing ", 2);
+	if (quote_char == '\'')
+		ft_putendl_fd("single quote", 2);
+	else if (quote_char == '"')
+		ft_putendl_fd("double quote", 2);
+	if (lexer->tmp_token)
 	{
-		if (lexer->tmp_token)
-		{
-			ft_lstclear(&(lexer->tmp_token), free);
-			lexer->tmp_token = NULL;
-		}
-		if (lexer->tokens)
-			clear_tokens_lst(&lexer->tokens);
-		write(2, "error: missing quote\n", 22);
-		return (1);
+		ft_lstclear(&(lexer->tmp_token), free);
+		lexer->tmp_token = NULL;
 	}
-	return (0);
+	if (lexer->tokens)
+		clear_tokens_lst(&lexer->tokens);
+	lexer->state = NORMAL;
+	lexer->error = 1;
 }
 
 static void	process_current_char(t_lexer *lexer)
 {
-	if (lexer->state == STATE_NORMAL)
+	if (lexer->state == NORMAL)
 		process_normal_state(lexer);
-	else if (lexer->state == STATE_SINGLE_QUOTE)
+	else if (lexer->state == SINGLE_QUOTE)
 		process_single_quote_state(lexer);
-	else if (lexer->state == STATE_DOUBLE_QUOTE)
+	else if (lexer->state == DOUBLE_QUOTE)
 		process_double_quote_state(lexer);
 }
 
 t_token	*ft_lexer(char *input, t_shell *shell)
 {
 	t_lexer		lexer;
+	char		c;
 
 	if (!shell || !input)
 		return (NULL);
 	ft_bzero(&lexer, sizeof(t_lexer));
-	lexer.state = STATE_NORMAL;
+	lexer.state = NORMAL;
 	lexer.input = input;
 	lexer.to_exp = true;
 	lexer.to_join = false;
 	lexer.pos = 0;
-	while (lexer.input[lexer.pos])
+	c = lexer.input[lexer.pos];
+	while (lexer.input[lexer.pos] && !lexer.error)
 	{
 		process_current_char(&lexer);
 		(lexer.pos)++;
 	}
-	if (check_if_not_normal_state(&lexer))
+	if (lexer.error)
+	{
+		shell->status = EXIT_FAILURE;
 		return (NULL);
-	create_token(&lexer, true, false);
+	}
+	create_token(&lexer, false);
 	return (lexer.tokens);
 }

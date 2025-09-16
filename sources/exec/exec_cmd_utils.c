@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 00:17:06 by clothildesc       #+#    #+#             */
-/*   Updated: 2025/09/05 10:14:14 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 11:48:09 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ int	prepare_cmd(t_cmd *cmd, t_env *env)
 {
 	int		status;
 
-	if (!cmd || !env)
+	if (!cmd || !env || (cmd->name[0] == '\0'))
 		return (EXIT_FAILURE);
 	if (ft_strchr(cmd->name, '/'))
 	{

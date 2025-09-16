@@ -6,12 +6,12 @@
 #    By: cscache <cscache@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/11 18:25:47 by cscache           #+#    #+#              #
-#    Updated: 2025/09/10 13:16:29 by cscache          ###   ########.fr        #
+#    Updated: 2025/09/16 15:50:01 by cscache          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g -O0 -ggdb
+CFLAGS = -Wall -Wextra -Werror
 LDFLAGS = -lreadline
 
 NAME = minishell

@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 11:41:18 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/10 11:32:59 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 15:44:38 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,21 @@ int	cmd_not_found(t_cmd *cmd)
 	char	*cmd_cut;
 
 	ft_putstr_fd("minishell: ", 2);
-	dollar_index = get_char_index(cmd->name, '$');
-	if (dollar_index > 0)
+	if (cmd->name)
 	{
-		cmd_cut = ft_substr(cmd->name, 0, dollar_index);
-		if (cmd_cut)
+		dollar_index = get_char_index(cmd->name, '$');
+		if (dollar_index > 0)
 		{
-			ft_putstr_fd(cmd_cut, 2);
-			free(cmd_cut);
+			cmd_cut = ft_substr(cmd->name, 0, dollar_index);
+			if (cmd_cut)
+			{
+				ft_putstr_fd(cmd_cut, 2);
+				free(cmd_cut);
+			}
 		}
+		else
+			ft_putstr_fd(cmd->name, 2);
 	}
-	else
-		ft_putstr_fd(cmd->name, 2);
 	ft_putendl_fd(": command not found", 2);
 	clear_cmd(cmd);
 	return (EXIT_CMD_NOT_FOUND);
@@ -104,8 +107,11 @@ int	execute_cmd(t_ast *node, t_shell *shell, int fd_i, int fd_o)
 	if (!node)
 		return (EXIT_FAILURE);
 	cmd = node->data.cmd.cmd;
-	if (!cmd->name)
-		return (EXIT_SUCCESS);
+	if (!cmd->name || cmd->name[0] == '\0')
+	{
+		cmd_not_found(cmd);
+		return (EXIT_CMD_NOT_FOUND);
+	}
 	if (cmd->name[0] == '$' && cmd->name[1])
 	{
 		clear_cmd(cmd);

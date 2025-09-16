@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_cd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
+/*   By: barmarti <barmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:38:45 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/09 10:23:00 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/12 10:26:53 by barmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ void	update_vars_pwd(t_env **head, char *key)
 	t_env	*new;
 	char	*cwd;
 
+	if (!head || !*head)
+		return ;
 	to_update = get_node(head, key);
 	free(to_update->value);
 	if (!ft_strcmp(key, "OLDPWD"))
@@ -35,8 +37,6 @@ void	update_vars_pwd(t_env **head, char *key)
 			free(cwd);
 		}
 	}
-	if (!to_update->value)
-		to_update->value = NULL;
 }
 
 char	*get_env_value(t_env *env, char *key)
