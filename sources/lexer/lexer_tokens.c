@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:48:19 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/15 17:11:42 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 14:24:14 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,34 +76,6 @@ static void	create_empty_token(t_lexer *lexer)
 	add_to_lst_tokens(&lexer->tokens, new_token);
 }
 
-static int	should_skip_empty_token(t_lexer *lexer)
-{
-	t_token	*last_token;
-	int		consecutives_quotes;
-	int		pos;
-
-	last_token = NULL;
-	if (lexer->tokens)
-	{
-		last_token = lexer->tokens;
-		while (last_token->next)
-			last_token = last_token->next;
-	}
-	if (!last_token || last_token->value[0] != '\0' || lexer->to_join != 0)
-		return (0);
-	consecutives_quotes = 0;
-	pos = lexer->pos - 1;
-	printf("[DEBUG] Start pos = %d\n", pos);
-	while (pos >= 0 && (lexer->input[pos] == '"' || lexer->input[pos] == '\''))
-	{
-		consecutives_quotes++;
-		pos--;
-		printf("[DEBUG] Start pos = %d\n", pos);
-	}
-	printf("[DEBUG] End pos = %d - char %c\n", pos, lexer->input[pos]);
-	return (consecutives_quotes > 2);
-}
-
 void	create_token(t_lexer *lexer, bool to_join)
 {
 	if (to_join)
@@ -113,11 +85,7 @@ void	create_token(t_lexer *lexer, bool to_join)
 	if (lexer->tmp_token)
 		create_new_token(lexer);
 	else if (to_join && lexer->state == NORMAL)
-	{
-		if (should_skip_empty_token(lexer))
-			return ;
 		create_empty_token(lexer);
-	}
 	ft_lstclear(&lexer->tmp_token, free);
 	lexer->tmp_token = NULL;
 	lexer->state = NORMAL;

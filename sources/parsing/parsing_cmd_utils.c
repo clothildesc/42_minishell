@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 17:01:17 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/15 12:54:26 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 15:44:08 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,13 +100,7 @@ void	ft_lstadd_args(t_arg **args, t_arg *new)
 			last = *args;
 			while (last->next)
 				last = last->next;
-			if (last->to_join && last->arg[0] == '\0' && new->arg[0] == '\0')
-			{
-				free(new->arg);
-				free(new);
-				return ;
-			}
-			else if (last->to_join)
+			if (last->to_join)
 				handle_to_join(last, new);
 			else
 				last->next = new;

@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 17:00:27 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/15 12:56:24 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 15:43:08 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,9 @@
 # define EXIT_CTRL_C 			130
 # define EXIT_CTRL_D 			131
 
-# define EOF_RECEIVED			3
-
 /*=============== ERRORS =============== */
 
 # define SYNTAX_ERROR_TOKEN "minishell: syntax error near unexpected token "
-# define SYNTAX_ERROR_KEY_ENV "minishell: export: not a valid identifier"
 # define ERROR_CD_MANY_ARGS "minishell: cd: too many arguments"
 # define ERROR_MISSING_FILE "minishell: No such file or directory"
 
@@ -109,7 +106,7 @@ void			create_redir_lst(t_token *token, t_cmd *cmd);
 /* env */
 t_env			*get_env(char **envp);
 void			ft_lstadd_back_env(t_env **lst, t_env *new);
-int				builtin_env(t_env *env);
+int				builtin_env(t_env *env, t_cmd *cmd);
 /* unset */
 int				builtin_unset(t_env **env, char **args);
 /* export */
@@ -118,6 +115,7 @@ int				value_to_append(char *input);
 char			*get_input_value(char *input);
 char			*get_input_key(char *input);
 t_env			*get_node(t_env **head, char *key);
+void			update_env_value(char *input, t_env **node);
 t_env			*create_new_env_node(t_env *new, char *input, char *key);
 int				print_env_export(t_env *env);
 /* expand */

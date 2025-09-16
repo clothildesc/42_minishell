@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 11:56:08 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/15 12:56:33 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 12:45:08 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ bool	is_parent_builtin(char *name)
 int	execute_builtins(t_cmd *cmd, t_shell *shell)
 {
 	if (!ft_strcmp(cmd->name, "env"))
-		return (builtin_env(shell->env));
+		return (builtin_env(shell->env, cmd));
 	else if (!ft_strcmp(cmd->name, "echo"))
 		return (builtin_echo(cmd->args));
 	else if (!ft_strcmp(cmd->name, "pwd"))

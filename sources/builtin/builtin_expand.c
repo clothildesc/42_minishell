@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/10 16:50:06 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/15 15:35:21 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 14:07:30 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,13 @@ static char	*find_env_var(t_env *env, char *var_to_exp, \
 		if (!ft_strcmp(var_to_exp, env->key))
 		{
 			result = ft_strjoin(env->value, &input[var_end_index]);
+			if (!result)
+				return (NULL);
 			return (result);
 		}
 		env = env->next;
 	}
-	result = ft_strdup(&input[var_end_index]);
+	result = ft_strjoin("", &input[var_end_index]);
 	if (!result)
 		return (NULL);
 	return (result);

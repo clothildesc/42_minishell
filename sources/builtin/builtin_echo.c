@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/10 16:47:11 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/15 15:44:14 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 15:44:54 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,6 @@ int	builtin_echo(char **args)
 	bool	first;
 	int		i;
 
-	int j = 0;
-	printf("=============ARGS=============\n");
-	while (args[j])
-	{
-		printf("arg[%d] = [%s]\n", j, args[j]);
-		j++;
-	}
-	printf("=============================\n");
 	i = 1;
 	first = true;
 	option = process_n_options(args, &i);
@@ -67,7 +59,7 @@ int	builtin_echo(char **args)
 	{
 		if (!first)
 			ft_printf(" ");
-		ft_printf("%s",args[i]);
+		ft_printf("%s", args[i]);
 		first = false;
 		i++;
 	}

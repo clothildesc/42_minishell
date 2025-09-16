@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/10 15:39:16 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/11 13:49:19 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 15:42:33 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,19 @@ int	value_to_append(char *input)
 
 char	*get_input_value(char *input)
 {
-	int	i;
+	int		i;
+	char	*value;
 
 	i = 0;
+	if (!input)
+		return (NULL);
 	while (input[i])
 	{
 		if (input[i] == '=')
-			return (ft_strdup(&input[i + 1]));
+		{
+			value = ft_strdup(&input[i + 1]);
+			return (value);
+		}
 		i++;
 	}
 	return (NULL);
@@ -68,10 +74,36 @@ char	*get_input_key(char *input)
 		return (NULL);
 	while (input[i] && input[i] != '=')
 		i++;
-	if (input[i] == '\0')
-		return (NULL);
 	if (value_to_append(input))
 		return (ft_strndup(input, i - 1));
 	else
 		return (ft_strndup(input, i));
+}
+
+void	update_env_value(char *input, t_env **node)
+{
+	char	*new_value;
+	char	*old_value;
+
+	if (!input || !node || !*node)
+		return ;
+	new_value = get_input_value(input);
+	if (!new_value)
+		return ;
+	if (value_to_append(input))
+	{
+		if (!new_value)
+			return ;
+		old_value = (*node)->value;
+		(*node)->value = ft_strjoin((*node)->value, new_value);
+		free(old_value);
+		free(new_value);
+	}
+	else
+	{
+		free((*node)->value);
+		(*node)->value = new_value;
+	}
+	if (!(*node)->value)
+		return ;
 }
