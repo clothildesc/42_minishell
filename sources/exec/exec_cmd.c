@@ -6,57 +6,11 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 11:41:18 by cscache           #+#    #+#             */
-/*   Updated: 2025/09/16 15:44:38 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/17 09:54:04 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-int	cmd_not_found(t_cmd *cmd)
-{
-	int		dollar_index;
-	char	*cmd_cut;
-
-	ft_putstr_fd("minishell: ", 2);
-	if (cmd->name)
-	{
-		dollar_index = get_char_index(cmd->name, '$');
-		if (dollar_index > 0)
-		{
-			cmd_cut = ft_substr(cmd->name, 0, dollar_index);
-			if (cmd_cut)
-			{
-				ft_putstr_fd(cmd_cut, 2);
-				free(cmd_cut);
-			}
-		}
-		else
-			ft_putstr_fd(cmd->name, 2);
-	}
-	ft_putendl_fd(": command not found", 2);
-	clear_cmd(cmd);
-	return (EXIT_CMD_NOT_FOUND);
-}
-
-int	get_exit_code(int status)
-{
-	int	sig;
-
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	else if (WIFSIGNALED(status))
-	{
-		sig = WTERMSIG(status);
-		if (sig == SIGQUIT)
-			write(STDERR_FILENO, "Quit (core dumped)\n", 20);
-		else if (sig == SIGINT)
-			write(STDOUT_FILENO, "\n", 1);
-		g_signal_received = 128 + sig;
-		return (g_signal_received);
-	}
-	else
-		return (EXIT_FAILURE);
-}
 
 static void	execute_child(t_cmd *cmd, t_shell *shell, int fd_i, int fd_o)
 {
@@ -69,8 +23,6 @@ static void	execute_child(t_cmd *cmd, t_shell *shell, int fd_i, int fd_o)
 		perror("malloc env_array");
 		free_and_exit(shell, EXIT_FAILURE);
 	}
-	if (prepare_redirections(cmd) == -1)
-		free_child_and_exit(shell, env_array, EXIT_FAILURE);
 	manage_dup(cmd, fd_i, fd_o);
 	close_all_fds_and_pipes(shell);
 	execve(cmd->abs_path, cmd->args, env_array);
@@ -85,13 +37,19 @@ static int	fork_and_execute(t_cmd *cmd, t_shell *shell, int fd_i, int fd_o)
 
 	if (!shell->env)
 		return (cmd_not_found(cmd));
+	if (prepare_redirections(cmd) == -1)
+		return (EXIT_FAILURE);
 	status = prepare_cmd(cmd, shell->env);
 	if (status != EXIT_SUCCESS)
+	{
+		close_files(cmd);
 		return (status);
+	}
 	pid = fork();
 	if (pid == -1)
 	{
 		perror("fork");
+		close_files(cmd);
 		return (EXIT_FAILURE);
 	}
 	if (pid == 0)
@@ -100,18 +58,21 @@ static int	fork_and_execute(t_cmd *cmd, t_shell *shell, int fd_i, int fd_o)
 	return (EXIT_SUCCESS);
 }
 
-int	execute_cmd(t_ast *node, t_shell *shell, int fd_i, int fd_o)
+static int	handle_empty_cmd(t_cmd *cmd)
 {
-	t_cmd	*cmd;
-
-	if (!node)
-		return (EXIT_FAILURE);
-	cmd = node->data.cmd.cmd;
-	if (!cmd->name || cmd->name[0] == '\0')
+	if (cmd->redirs)
 	{
-		cmd_not_found(cmd);
-		return (EXIT_CMD_NOT_FOUND);
+		if (prepare_redirections(cmd) == -1)
+			return (EXIT_FAILURE);
+		close_files(cmd);
+		return (EXIT_SUCCESS);
 	}
+	cmd_not_found(cmd);
+	return (EXIT_CMD_NOT_FOUND);
+}
+
+static int	handle_dollar_cmd(t_cmd *cmd)
+{
 	if (cmd->name[0] == '$' && cmd->name[1])
 	{
 		clear_cmd(cmd);
@@ -122,6 +83,22 @@ int	execute_cmd(t_ast *node, t_shell *shell, int fd_i, int fd_o)
 		cmd_not_found(cmd);
 		return (EXIT_CMD_NOT_FOUND);
 	}
+	return (0);
+}
+
+int	execute_cmd(t_ast *node, t_shell *shell, int fd_i, int fd_o)
+{
+	t_cmd	*cmd;
+	int		result;
+
+	if (!node)
+		return (EXIT_FAILURE);
+	cmd = node->data.cmd.cmd;
+	if (!cmd->name || cmd->name[0] == '\0')
+		return (handle_empty_cmd(cmd));
+	result = handle_dollar_cmd(cmd);
+	if (result != 0)
+		return (result);
 	if (is_a_builtin(cmd->name))
 		return (exec_builtin_simple(cmd, shell, fd_i, fd_o));
 	return (fork_and_execute(cmd, shell, fd_i, fd_o));

@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/10 15:39:16 by barmarti          #+#    #+#             */
-/*   Updated: 2025/09/16 15:42:33 by cscache          ###   ########.fr       */
+/*   Updated: 2025/09/16 17:44:19 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,16 @@ char	*get_input_value(char *input)
 		if (input[i] == '=')
 		{
 			value = ft_strdup(&input[i + 1]);
+			if (!value)
+				return (NULL);
 			return (value);
 		}
 		i++;
 	}
-	return (NULL);
+	value = ft_strdup("");
+	if (!value)
+		return (NULL);
+	return (value);
 }
 
 char	*get_input_key(char *input)

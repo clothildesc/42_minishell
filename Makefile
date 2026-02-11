@@ -6,7 +6,7 @@
 #    By: cscache <cscache@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/11 18:25:47 by cscache           #+#    #+#              #
-#    Updated: 2025/09/16 15:50:01 by cscache          ###   ########.fr        #
+#    Updated: 2025/09/17 10:31:46 by cscache          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,6 +45,7 @@ EXEC = $(SRCS_DIR)/$(EXC_DIR)/exec_ast.c\
 		$(SRCS_DIR)/$(EXC_DIR)/exec_builtins_utils.c\
 		$(SRCS_DIR)/$(EXC_DIR)/exec_cmd.c\
 		$(SRCS_DIR)/$(EXC_DIR)/exec_cmd_utils.c\
+		$(SRCS_DIR)/$(EXC_DIR)/exec_cmd_utils_2.c\
 		$(SRCS_DIR)/$(EXC_DIR)/exec_heredoc.c\
 		$(SRCS_DIR)/$(EXC_DIR)/exec_heredoc_utils.c\
 		$(SRCS_DIR)/$(EXC_DIR)/exec_heredoc_utils_2.c\
