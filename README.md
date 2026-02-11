@@ -1,4 +1,4 @@
-# 42 Minishell
+# Minishell
 
 A lightweight Unix shell implementation in C, inspired by Bash. This project recreates core shell functionalities including command execution, pipelines, redirections, environment variables, and built-in commands.
 
@@ -15,7 +15,7 @@ A lightweight Unix shell implementation in C, inspired by Bash. This project rec
 
 This shell provides a command-line interface similar to bash, with support for complex command pipelines, input/output redirections, and heredocs.
 
-**🤝 This project was completed in pair programming (100% peer programming) with [@RVTEL-git](https://github.com/RVTEL-git) (Barnabé).**
+**🤝 This project was completed in pair programming with Barnabé [@RVTEL-git](https://github.com/RVTEL-git)**
 
 ## 🚀 Features
 
@@ -283,22 +283,22 @@ This shell is a simplified version and does not support:
 ## 🎓 Learning Outcomes
 
 This project teaches:
-- ✅ Deep understanding of Unix processes
-- ✅ File descriptor manipulation
-- ✅ Parsing and lexical analysis
-- ✅ Abstract Syntax Tree construction
-- ✅ Memory management in complex programs
-- ✅ Signal handling in interactive applications
-- ✅ **Collaboration and pair programming best practices**
+- Deep understanding of Unix processes
+- File descriptor manipulation
+- Parsing and lexical analysis
+- Abstract Syntax Tree construction
+- Memory management in complex programs
+- Signal handling in interactive applications
+- **Collaboration and pair programming best practices**
 
 ## 👥 Authors
 
 This project was developed in **100% pair programming** by:
 
-**Clothilde Scache** (cscache)
+**Clothilde** (cscache)
 - GitHub: [@clothildesc](https://github.com/clothildesc)
 
-**Barnabé Martinez** (barmarti)
+**Barnabé** (barmarti)
 - GitHub: [@RVTEL-git](https://github.com/RVTEL-git)
 
 ## 📄 License
