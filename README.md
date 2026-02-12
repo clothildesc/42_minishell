@@ -2,6 +2,9 @@
 
 A lightweight Unix shell implementation in C, inspired by Bash. This project recreates core shell functionalities including command execution, pipelines, redirections, environment variables, and built-in commands.
 
+![C](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)
+![GNU Bash](https://img.shields.io/badge/GNU%20Bash-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white)
+
 ## 📋 Description
 
 **Minishell** is a 42 School project that challenges students to create their own shell. It demonstrates deep understanding of:
